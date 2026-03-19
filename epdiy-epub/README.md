@@ -163,8 +163,8 @@ menuconfig --board=sf32-oed-epd_v11 --board_search_path=..
 |
 ├──project                          # 编译脚本为项目编译、调试、部署提供工具链支持
 |
-├──sf32-oed-epd_v11和sf32-oed-epd_v12                # SF32-OED-6'-EPD_V1.1`和`SF32-OED-6'-EPD_V1.2`开发板公用的相关配置文件
-├──sf32-oed-epd_v12_spi             # `SF32-OED-6'-EPD_V1.2`开发板搭配SPI墨水屏的相关配置文件
+├──sf32-oed-epd_v11和sf32-oed-epd_v12                # `SF32-OED-EPD_V1.1`和`SF32-OED-EPD_V1.2`开发板公用的相关配置文件
+├──sf32-oed-epd_v12_spi             # `SF32-OED-EPD_V1.2`开发板搭配SPI墨水屏的相关配置文件
 |
 ├──src                              # 项目核心源码目录，实现阅读器业务逻辑
     ├──boards                       # 硬件板级<br>
@@ -176,7 +176,6 @@ menuconfig --board=sf32-oed-epd_v11 --board_search_path=..
     └──main.cpp                     # 程序入口（main 函数），初始化硬件、加载库、启动阅读器主逻辑（如打开 EPUB 文件、进入阅读界面 ）
 
 ```
----
 
 ## 二次开发
 
@@ -184,8 +183,6 @@ menuconfig --board=sf32-oed-epd_v11 --board_search_path=..
 
 - 少量样书：放入 `disk/`，随文件系统镜像打包。
 - 大量书籍：建议使用 TF 卡。
-
-
 
 #### 添加新的屏幕屏驱
 
