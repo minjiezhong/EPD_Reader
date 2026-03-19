@@ -6,18 +6,18 @@
 
 ## 当前功能
 
-### 1) 电子书与文件系统
+### 电子书与文件系统
 
 - 支持从内置文件系统与 TF 卡读取 EPUB（优先使用 TF 卡）。
 - `disk/` 目录可打包示例 EPUB 到镜像中。
 
-### 2) 输入与显示
+### 输入与显示
 
 - 支持按键与触控双输入。
 - 支持中文/英文显示。
 - 为控制资源占用，默认未启用粗体/斜体中文字库。
 
-### 3) UI 页面与状态机
+### UI 页面与状态机
 
 当前 UI 状态：
 
@@ -33,7 +33,7 @@
 
 默认开机进入 `MAIN_PAGE`。
 
-### 4) 主页面
+### 主页面
 
 主页面包含 3 个入口：
 
@@ -46,7 +46,7 @@
 - “继续阅读”基于本次运行期间最近一次成功进入阅读的书籍索引。
 - 若当前无可用记录，则显示“无阅读记录”。
 
-### 5) 设置页面
+### 设置页面
 
 支持以下设置项：
 
@@ -55,7 +55,7 @@
 3. 全刷周期：`5次 / 10次 / 20次 / 每次(0)`
 4. 确认保存并返回主页面
 
-### 6) 阅读页覆盖操作层
+### 阅读页覆盖操作层
 
 在阅读页触发 `UPGLIDE`（上滑/映射动作）可呼出覆盖操作层，支持：
 
@@ -65,13 +65,13 @@
 - 进入目录页
 - 返回书库
 
-### 7) 书库页与目录页
+### 书库页与目录页
 
 - 书库页：每页 4 项，底部支持“上一页 / 主页面 / 下一页”。
 - 目录页：每页 6 项，底部支持“上一页 / 书库 / 下一页”。
 - 触控采用“先选中再确认”机制以降低误触。
 
-### 8) 电量与低功耗
+### 电量与低功耗
 
 - 页面顶部显示电量与充电状态。
 - 低电量进入 `LOW_POWER_PAGE` 并抑制普通用户操作。
@@ -83,24 +83,13 @@
 
 ## 使用指南
 
-### 1) 硬件连接
+### 硬件连接
 
 - 将开发板与墨水屏通过对应连接器连接，注意排线方向。
-- `SF32-OED-6'-EPD_V1.1` 与 `SF32-OED-6'-EPD_V1.2` 可共用 `sf32-oed-epd_v11` 软件板级配置。
+- `SF32-OED-EPD_V1.1` 与 `SF32-OED-EPD_V1.2` 可共用 `sf32-oed-epd_base` 软件板级配置。
 
-### 2) 编译环境
 
-已验证环境：
-
-- [SiFli-ENV 1.1.2](https://docs.sifli.com/projects/sdk/latest/sf32lb52x/quickstart/install/lacey_install.html)
-- `armclang` + `Keil 5.32`
-
-已知问题：
-
-- `Keil 5.42` 存在 C 语法兼容问题。
-- GCC 模式存在兼容与空间越界问题，待后续优化。
-
-### 3) 编译与烧录
+### 编译与烧录
 
 进入 `epdiy-epub/project` 后执行：
 
@@ -119,23 +108,23 @@ build_sf32-oed-epd_v11_hcpu\uart_download.bat
 参考：
 [SiFli 官方编译/烧录文档](https://docs.sifli.com/projects/sdk/latest/sf32lb52x/quickstart/build.html)
 
-### 4) menuconfig
+### menuconfig
 
 ```bash
-menuconfig --board=sf32-oed-epd_v11 --board_search_path=..
+scons --board=sf32-oed-epd_v11 --board_search_path=.. --menuconfig
 ```
 
 
 ## 操作说明
 
-### 1) 按键动作语义
+### 按键动作语义
 
 - `UP`：上移 / 上一项 / 向前翻页
 - `DOWN`：下移 / 下一项 / 向后翻页
 - `SELECT`：确认 / 进入
 - `UPGLIDE`：阅读页呼出覆盖操作层
 
-### 2) 触控操作
+### 触控操作
 
 - 主页面：点击左右区域切换选项，点击中间区域确认。
 - 书库页：点击书籍项选中，再次点击确认打开。
@@ -164,7 +153,7 @@ menuconfig --board=sf32-oed-epd_v11 --board_search_path=..
 ├──project                          # 编译脚本为项目编译、调试、部署提供工具链支持
 |
 ├──sf32-oed-epd_v11和sf32-oed-epd_v12                # `SF32-OED-EPD_V1.1`和`SF32-OED-EPD_V1.2`开发板公用的相关配置文件
-├──sf32-oed-epd_v12_spi             # `SF32-OED-EPD_V1.2`开发板搭配SPI墨水屏的相关配置文件
+├──sf32-oed-epd_v12_spi             # `SF32-OED-6'-EPD_V1.2`开发板搭配SPI墨水屏的相关配置文件
 |
 ├──src                              # 项目核心源码目录，实现阅读器业务逻辑
     ├──boards                       # 硬件板级<br>
@@ -176,10 +165,11 @@ menuconfig --board=sf32-oed-epd_v11 --board_search_path=..
     └──main.cpp                     # 程序入口（main 函数），初始化硬件、加载库、启动阅读器主逻辑（如打开 EPUB 文件、进入阅读界面 ）
 
 ```
+---
 
 ## 二次开发
 
-### 1) 添加 EPUB
+### 添加 EPUB
 
 - 少量样书：放入 `disk/`，随文件系统镜像打包。
 - 大量书籍：建议使用 TF 卡。
@@ -192,9 +182,9 @@ menuconfig --board=sf32-oed-epd_v11 --board_search_path=..
    - 局刷波形：`static const uint8_t xxx_wave_forms_partial[12][256] = {}`
 3. 按屏驱文档修改关键函数（波形选择、LUT 转换、时序频率、VCOM）。
 
-**2.1 多温区波形选择（可选）**
+ * 3.1多温区波形选择（可选)
 
-如果波形按温度分段，可组织为多组二维数组，通过温度选择对应波形：
+    如果波形按温度分段，可组织为多组二维数组，通过温度选择对应波形：
 
 ```c
 // 定义波形表条目结构体
@@ -243,9 +233,9 @@ uint32_t epd_wave_table_get_frames(int temperature, EpdDrawMode mode)
 }
 ```
 
-**2.2  位波形转换为 32 位 Epic LUT**
+* 3.2波形转换为 32 位 Epic LUT
 
-将当前帧的 8 位波形转换为硬件使用的 32 位 LUT 值：
+    将当前帧的 8 位波形转换为硬件使用的 32 位 LUT 值：
 
 ```c
 void epd_wave_table_fill_lut(uint32_t *p_epic_lut, uint32_t frame_num)
@@ -259,9 +249,9 @@ void epd_wave_table_fill_lut(uint32_t *p_epic_lut, uint32_t frame_num)
 }
 ```
 
-**2.3 调整时序与频率参数**
+* 3.3调整时序与频率参数
 
-按屏驱规格书配置 `SDCLK -> sclk_freq`、`frame clock -> fclk_freq` 及相关时序参数：
+    按屏驱规格书配置 `SDCLK -> sclk_freq`、`frame clock -> fclk_freq` 及相关时序参数：
 
 ```c
 const EPD_TimingConfig *epd_get_timing_config(void)
@@ -285,9 +275,9 @@ const EPD_TimingConfig *epd_get_timing_config(void)
 }
 ```
 
-**2.4 设置 VCOM 电压**
+* 3.4设置 VCOM 电压
 
-根据新屏规格书提供电子书显示所需参考电压：
+    根据新屏规格书提供电子书显示所需参考电压：
 
 ```c
 uint16_t epd_get_vcom_voltage(void)
