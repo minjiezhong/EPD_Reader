@@ -247,7 +247,17 @@ void reading_settings_draw(Renderer *renderer)
 
     int page_w = renderer->get_page_width();
     int page_h = renderer->get_page_height();
+    /*
+     * 自适应行高：取实际字体行高，但封顶保证 6 个设置项 + 标题 + 提示区都能放进页面。
+     * 布局公式：20(top) + line_h*2(title) + 10(sep) + 6*line_h*2(items) + line_h*3(hints)
+     *         = 30 + 17 * line_h  ≤  page_h
+     * => max_line_h = (page_h - 30) / 17
+     */
     int line_h = renderer->get_line_height();
+    int max_lh = (page_h - 30) / 17;
+    if (max_lh < 20) max_lh = 20;
+    if (line_h > max_lh) line_h = max_lh;
+
     int y = 20;
     int x_label = 30;
     int x_value = page_w * 2 / 5;

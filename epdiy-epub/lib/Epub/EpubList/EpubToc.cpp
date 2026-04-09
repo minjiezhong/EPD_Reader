@@ -196,6 +196,11 @@ void EpubToc::render()
   draw_button(btn_x0, "上一页", m_bottom_mode && m_bottom_idx == 0);
   draw_button(btn_x1, "书库", m_bottom_mode && m_bottom_idx == 1);
   draw_button(btn_x2, "下一页", m_bottom_mode && m_bottom_idx == 2);
+
+  // 注册底部三按钮的触控区域（对应 g_area_array[6,7,8]）
+  static_add_area(btn_x0, btn_y, btn_w, btn_h, 6);
+  static_add_area(btn_x1, btn_y, btn_w, btn_h, 7);
+  static_add_area(btn_x2, btn_y, btn_w, btn_h, 8);
 }
 
 uint16_t EpubToc::get_selected_toc()

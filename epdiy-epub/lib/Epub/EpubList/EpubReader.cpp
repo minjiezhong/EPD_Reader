@@ -411,12 +411,20 @@ void EpubReader::render_overlay()
   // 三行布局：3, 5, 4（第三行加了"设置"按钮）
   const int rows = 3;
   const int cols[rows] = {3, 5, 4};
-  const int gap_h = 20;
   const int gap_w = 10;
-  const int row_h = 80;
+
+  // 动态计算 row_h 和 gap_h，确保三行按钮自适应填满 overlay 区域
+  const int min_gap = 6;
+  int avail_for_rows = area_h - (rows + 1) * min_gap;
+  int row_h = avail_for_rows / rows;
+  if (row_h > 80) row_h = 80;   // 上限，按钮不要太大
+  if (row_h < 40) row_h = 40;   // 下限，保证可点击
+  int gap_h = (area_h - rows * row_h) / (rows + 1);
+  if (gap_h < 2) gap_h = 2;
+
   int content_h = rows * row_h + (rows + 1) * gap_h;
   int y0 = area_y + (area_h - content_h) / 2;
-  if (y0 < area_y + 4) y0 = area_y + 4;
+  if (y0 < area_y + 2) y0 = area_y + 2;
 
   int index = 0;
   auto fill_label = [&](int idx, char *label, size_t cap) {
