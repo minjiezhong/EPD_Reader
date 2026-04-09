@@ -112,17 +112,26 @@ void epd_wave_table_fill_lut(uint32_t *p_epic_lut, uint32_t frame_num)
 
 #include "mem_map.h"
 #include "epd_waveform_bin_reader.h"
+#include "drv_flash.h"
 #ifndef CUSTOM_EPD_WAVE_TABLE_START_ADDR
 #error "CUSTOM_EPD_WAVE_TABLE_START_ADDR is not defined!!!"
 #endif
-
 void epd_wave_table(void)
 {
-    int ret = waveform_bin_reader_init(CUSTOM_EPD_WAVE_TABLE_START_ADDR, CUSTOM_EPD_WAVE_TABLE_SIZE);
+    static uint8_t initialized = 0;
 
-    if(ret != 0)
+    if(0 == initialized)
     {
-        rt_kprintf("Failed to initialize custom EPD wave table reader! err=%d\n", ret);
+        int ret = waveform_bin_reader_init(CUSTOM_EPD_WAVE_TABLE_SIZE);
+
+        if(ret != 0)
+        {
+            rt_kprintf("Failed to initialize custom EPD wave table reader! err=%d\n", ret);
+        }
+        else
+        {
+            initialized = 1;
+        }
     }
 }
 
@@ -130,14 +139,54 @@ uint32_t epd_wave_table_get_frames(int temperature, EpdDrawMode mode)
 {
     uint32_t frames;
 
-    frames = waveform_bin_reader_get_frames(temperature, mode);
+    //Convert EpdDrawMode to WAVE_TABLE_MODE_T
+    WAVE_TABLE_MODE_T wave_table_mode;
+    switch(mode) {
+        case EPD_DRAW_MODE_FULL:
+            wave_table_mode = WAVE_MODE_FULL;
+            break;
+        case EPD_DRAW_MODE_PARTIAL:
+            wave_table_mode = WAVE_MODE_PARTIAL;
+            break;
+        default:
+            rt_kprintf("Unknown EPD draw mode: %d, use WAVE_MODE_FULL mode\n", mode);
+            wave_table_mode = WAVE_MODE_FULL;
+            break;
+    }
 
+    frames = waveform_bin_reader_get_frames(temperature, wave_table_mode);
     return frames;
 }
 
 void epd_wave_table_fill_lut(uint32_t *p_epic_lut, uint32_t frame_num)
 {
     waveform_bin_reader_fill_lut(p_epic_lut, frame_num);
+}
+
+int waveform_bin_reader_read_data(uint32_t offset, uint8_t *buf, uint32_t size)
+{
+    int read_size = 0;
+    #ifdef BSP_USING_SPI_NAND
+        read_size = rt_nand_read(CUSTOM_EPD_WAVE_TABLE_START_ADDR + offset,buf,size);
+    #else
+        read_size = rt_flash_read(CUSTOM_EPD_WAVE_TABLE_START_ADDR + offset,buf,size);
+    #endif
+
+    if (read_size != size) {
+        rt_kprintf("Failed to read data at offset 0x%08X, expected %d bytes, got %zu bytes\n", offset, size, read_size);
+        return -1;
+    }
+
+    return read_size;
+}
+void *waveform_bin_reader_malloc(size_t size)
+{
+    return rt_malloc(size);
+}
+
+void waveform_bin_reader_free(void *ptr)
+{
+    rt_free(ptr);
 }
 
 #endif /*EPD_WAVEFORM_USE_BIN*/

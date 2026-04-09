@@ -10,7 +10,7 @@ inc = [cwd]
 obj = []
 lib = []
 
-if os.path.isfile(os.path.join(cwd, 'epd_waveform_bin_reader_rvds.lib')):
+if os.path.isfile(os.path.join(cwd, 'epd_waveform_bin_reader_rvds.lib')) or os.path.isfile(os.path.join(cwd, 'libepd_waveform_bin_reader_gcc.a')):
     lib = [GroupLibName("epd_waveform_bin_reader")]
 else:
     src = src + Glob('*.c')
